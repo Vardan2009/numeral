@@ -15,6 +15,6 @@ namespace lexer {
 				src = s;
 				ptr = s.c_str();
 			}
-			std::vector<Token*> tokenize();
+			std::vector<std::shared_ptr<lexer::Token>> tokenize();
 	};
 }

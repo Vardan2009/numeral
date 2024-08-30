@@ -1,7 +1,7 @@
 ﻿#include "lexer.h"
 
-std::vector<lexer::Token*> lexer::Lexer::tokenize() {
-	std::vector <lexer::Token*> result;
+std::vector<std::shared_ptr<lexer::Token>> lexer::Lexer::tokenize() {
+	std::vector <std::shared_ptr<lexer::Token>> result;
 	for (ptr = src.c_str(); *ptr != '\0'; ++ptr) {
 		if (isdigit(*ptr)) {
 			std::string str_val;
@@ -10,27 +10,27 @@ std::vector<lexer::Token*> lexer::Lexer::tokenize() {
 				if (*ptr == '.') dotted = true;
 				str_val += *ptr;
 			}
-			result.push_back(new Token(NUMBER, std::stod(str_val.c_str())));
+			result.push_back(std::make_unique<Token>(NUMBER, std::stod(str_val.c_str())));
 		} if (isalpha(*ptr)) {
 			std::string str_val;
 			for (; *ptr != '\0' && isalpha(*ptr); ++ptr) {
 				str_val += *ptr;
 			}
-			result.push_back(new Token(IDENTIFIER, str_val));
+			result.push_back(std::make_unique<Token>(IDENTIFIER, str_val));
 		} else if (*ptr == '+') {
-			result.push_back(new Token(PLUS, "+"));
+			result.push_back(std::make_unique<Token>(PLUS, "+"));
 		} else if (*ptr == '-') {
-			result.push_back(new Token(MINUS, "-"));
+			result.push_back(std::make_unique<Token>(MINUS, "-"));
 		} else if (*ptr == '*') {
-			result.push_back(new Token(MUL, "*"));
+			result.push_back(std::make_unique<Token>(MUL, "*"));
 		} else if (*ptr == '/') {
-			result.push_back(new Token(DIV, "/"));
+			result.push_back(std::make_unique<Token>(DIV, "/"));
 		} else if (*ptr == '^') {
-			result.push_back(new Token(CARET, "^"));
+			result.push_back(std::make_unique<Token>(CARET, "^"));
 		} else if (*ptr == '(') {
-			result.push_back(new Token(LPAREN));
+			result.push_back(std::make_unique<Token>(LPAREN));
 		} else if (*ptr == ')') {
-			result.push_back(new Token(RPAREN));
+			result.push_back(std::make_unique<Token>(RPAREN));
 		} else if (isspace(*ptr)) {
 			// ignore whitespace
 		} else if (*ptr == '\0') break;

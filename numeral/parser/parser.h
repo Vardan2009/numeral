@@ -6,20 +6,20 @@
 namespace parser {
 	class Parser {
 	private:
-		std::vector<lexer::Token*> tokens;
+		std::vector<std::shared_ptr<lexer::Token>> tokens;
 		int ptr = 0;
-		lexer::Token* peek();
-		lexer::Token* advance();
-		void consume(lexer::token_t, std::string);
+		std::shared_ptr<lexer::Token> peek();
+		std::shared_ptr<lexer::Token> advance();
+		void consume(lexer::token_t, const std::string);
 		void consume(lexer::token_t, double);
 		void consume(lexer::token_t);
 	public:
-		Parser(std::vector<lexer::Token*> t) {
+		Parser(std::vector<std::shared_ptr<lexer::Token>> t) {
 			tokens = t;
 			ptr = 0;
 		}
-		Node* expr();
-		Node* term();
-		Node* factor();
+		std::shared_ptr<parser::Node> expr();
+		std::shared_ptr<parser::Node> term();
+		std::shared_ptr<parser::Node> factor();
 	};
 }
