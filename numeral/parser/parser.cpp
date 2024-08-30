@@ -9,7 +9,7 @@ std::shared_ptr<parser::Node> parser::Parser::expr() {
     while (ptr < tokens.size() && (peek()->type == lexer::PLUS || peek()->type == lexer::MINUS)) {
         std::shared_ptr<lexer::Token> op = advance();  // Move token ownership for op
         std::shared_ptr<parser::Node> right = term();  // Parse the right side
-        node = std::make_unique<BinOpNode>(node, op->value_str[0], right);
+        node = std::make_shared<BinOpNode>(node, op->value_str[0], right);
     }
 
     return node;
@@ -22,7 +22,7 @@ std::shared_ptr<parser::Node> parser::Parser::term() {
     while (ptr < tokens.size() && (peek()->type == lexer::MUL || peek()->type == lexer::DIV || peek()->type == lexer::CARET)) {
         std::shared_ptr<lexer::Token> op = advance();  // Move token ownership for op
         std::shared_ptr<parser::Node> right = factor();  // Parse the right side as a factor
-        node = std::make_unique<BinOpNode>(node, op->value_str[0], right);
+        node = std::make_shared<BinOpNode>(node, op->value_str[0], right);
     }
 
     return node;
@@ -34,10 +34,10 @@ std::shared_ptr<parser::Node> parser::Parser::factor() {
     switch (t->type) {
     case lexer::NUMBER:
         advance();  // Move to next token
-        return std::make_unique<LiteralNode>(t->value);  // Return a literal node with value
+        return std::make_shared<LiteralNode>(t->value);  // Return a literal node with value
     case lexer::IDENTIFIER:
         advance();  // Move to next token
-        return std::make_unique<VariableNode>(t->value_str);  // Return a variable node
+        return std::make_shared<VariableNode>(t->value_str);  // Return a variable node
     case lexer::LPAREN:
         consume(lexer::LPAREN);  // Consume the '(' token
         std::shared_ptr<parser::Node> node = expr();  // Parse inner expression
