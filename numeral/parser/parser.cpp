@@ -17,10 +17,15 @@ std::shared_ptr<parser::Node> parser::Parser::term() {
     std::shared_ptr<parser::Node> node = factor();  // Start by parsing a factor
     
     // Handle multiplication, division, exponentiation
-    while (ptr < tokens.size() && (peek()->type == lexer::MUL || peek()->type == lexer::DIV || peek()->type == lexer::CARET || peek()->type == lexer::ASSIGN)) {
-        std::shared_ptr<lexer::Token> op = advance();
-        std::shared_ptr<parser::Node> right = op->type == lexer::ASSIGN ? expr() : factor();  // Parse the right side as a factor
-        node = std::make_shared<BinOpNode>(node, op->type, right);
+    while (ptr < tokens.size() && (peek()->type == lexer::MUL || peek()->type == lexer::DIV || peek()->type == lexer::CARET || peek()->type == lexer::ASSIGN || peek()->type == lexer::LPAREN)) {
+        if (peek()->type == lexer::LPAREN) {
+            std::shared_ptr<parser::Node> right = factor();
+            node = std::make_shared<BinOpNode>(node, lexer::MUL, right);
+        } else {
+            std::shared_ptr<lexer::Token> op = advance();
+            std::shared_ptr<parser::Node> right = op->type == lexer::ASSIGN ? expr() : factor();  // Parse the right side as a factor
+            node = std::make_shared<BinOpNode>(node, op->type, right);
+        }
     }
 
     return node;
