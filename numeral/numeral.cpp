@@ -30,7 +30,7 @@ void processInput(const std::string& input) {
     try {
         parser::Parser parser(tokens);
         root = parser.expr();
-        root->print(0);
+        // root->print(0);
     }
     catch (std::runtime_error e) {
         std::cerr << "[parser] " << e.what() << std::endl;

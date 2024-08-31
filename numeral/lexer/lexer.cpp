@@ -16,6 +16,7 @@ std::vector<std::shared_ptr<lexer::Token>> lexer::Lexer::tokenize() {
 			for (; *ptr != '\0' && isalpha(*ptr); ++ptr) {
 				str_val += *ptr;
 			}
+			--ptr;
 			result.push_back(std::make_shared<Token>(IDENTIFIER, str_val));
 		} else if (*ptr == '+') {
 			result.push_back(std::make_shared<Token>(PLUS, "+"));
