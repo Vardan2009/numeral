@@ -15,10 +15,10 @@ std::shared_ptr<parser::Node> parser::Parser::expr() {
 
 std::shared_ptr<parser::Node> parser::Parser::term() {
     std::shared_ptr<parser::Node> node = factor();  // Start by parsing a factor
-    
+
     // Handle multiplication, division, exponentiation
-    while (ptr < tokens.size() && (peek()->type == lexer::MUL || peek()->type == lexer::DIV || peek()->type == lexer::CARET || peek()->type == lexer::ASSIGN || peek()->type == lexer::LPAREN)) {
-        if (peek()->type == lexer::LPAREN) { // if the next token is a left parenthasis (for multipliations like 5(2 + 3) or (1 + 1)(2 + 2))
+    while (ptr < tokens.size() && (peek()->type == lexer::MUL || peek()->type == lexer::DIV || peek()->type == lexer::CARET || peek()->type == lexer::ASSIGN || peek()->type == lexer::LPAREN || peek()->type == lexer::IDENTIFIER)) {
+        if (peek()->type == lexer::LPAREN || peek()->type == lexer::IDENTIFIER) { // if the next token is a left parenthasis or identifer (for multipliations like 5(2 + 3) or (1 + 1)(2 + 2) or 3x)
             std::shared_ptr<parser::Node> right = factor(); // get the right side (which is a factor)
             node = std::make_shared<BinOpNode>(node, lexer::MUL, right); // create a multiplication node
         } else {
