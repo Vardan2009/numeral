@@ -2,6 +2,7 @@
 #include <vector>
 #include "node.h"
 #include "../lexer/lexer.h"
+#include "../lexer/token.h"
 
 namespace parser {
 	class Parser {

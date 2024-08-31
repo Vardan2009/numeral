@@ -7,7 +7,7 @@ std::shared_ptr<parser::Node> parser::Parser::expr() {
     while (ptr < tokens.size() && (peek()->type == lexer::PLUS || peek()->type == lexer::MINUS)) {
         std::shared_ptr<lexer::Token> op = advance();  // Move token ownership for op
         std::shared_ptr<parser::Node> right = term();  // Parse the right side
-        node = std::make_shared<BinOpNode>(node, op->value_str[0], right);
+        node = std::make_shared<BinOpNode>(node, op->type, right);
     }
 
     return node;
@@ -15,12 +15,12 @@ std::shared_ptr<parser::Node> parser::Parser::expr() {
 
 std::shared_ptr<parser::Node> parser::Parser::term() {
     std::shared_ptr<parser::Node> node = factor();  // Start by parsing a factor
-
-    // Handle multiplication, division, and exponentiation
-    while (ptr < tokens.size() && (peek()->type == lexer::MUL || peek()->type == lexer::DIV || peek()->type == lexer::CARET)) {
-        std::shared_ptr<lexer::Token> op = advance();  // Move token ownership for op
-        std::shared_ptr<parser::Node> right = factor();  // Parse the right side as a factor
-        node = std::make_shared<BinOpNode>(node, op->value_str[0], right);
+    
+    // Handle multiplication, division, exponentiation
+    while (ptr < tokens.size() && (peek()->type == lexer::MUL || peek()->type == lexer::DIV || peek()->type == lexer::CARET || peek()->type == lexer::ASSIGN)) {
+        std::shared_ptr<lexer::Token> op = advance();
+        std::shared_ptr<parser::Node> right = op->type == lexer::ASSIGN ? expr() : factor();  // Parse the right side as a factor
+        node = std::make_shared<BinOpNode>(node, op->type, right);
     }
 
     return node;
@@ -39,7 +39,7 @@ std::shared_ptr<parser::Node> parser::Parser::factor() {
     case lexer::PLUS:
     case lexer::MINUS:
         advance(); // Move to next token
-        return std::make_shared<UnaryOpNode>(t->value_str[0], factor()); // create a unary operator with the operator and the factor after it
+        return std::make_shared<UnaryOpNode>(t->type, factor()); // create a unary operator with the operator and the factor after it
     case lexer::LPAREN:
         consume(lexer::LPAREN);  // Consume the '(' token
         std::shared_ptr<parser::Node> node = expr();  // Parse inner expression

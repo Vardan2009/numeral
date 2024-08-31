@@ -28,14 +28,19 @@ std::vector<std::shared_ptr<lexer::Token>> lexer::Lexer::tokenize() {
 		} else if (*ptr == '^') {
 			result.push_back(std::make_shared<Token>(CARET, "^"));
 		} else if (*ptr == '(') {
-			result.push_back(std::make_shared<Token>(LPAREN));
+			result.push_back(std::make_shared<Token>(LPAREN, "("));
 		} else if (*ptr == ')') {
-			result.push_back(std::make_shared<Token>(RPAREN));
+			result.push_back(std::make_shared<Token>(RPAREN, ")"));
+		} else if (*ptr == ':') {
+			if(*(++ptr) == '=')
+				result.push_back(std::make_shared<Token>(ASSIGN, ":="));
+			else
+				throw std::runtime_error("Invalid character `" + std::to_string(*ptr) + "` at position " + std::to_string(ptr - src.c_str()));
 		} else if (isspace(*ptr)) {
 			// ignore whitespace
 		} else if (*ptr == '\0') break;
 		else {
-			throw std::runtime_error("Invalid character -> `" + std::to_string(*ptr) + "` at position " + std::to_string(ptr - src.c_str()));
+			throw std::runtime_error("Invalid character `" + std::to_string(*ptr) + "` at position " + std::to_string(ptr - src.c_str()));
 		}
 	}
 	return result;

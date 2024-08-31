@@ -11,6 +11,7 @@ namespace lexer {
 		DIV,
 		MUL,
 		CARET,
+		ASSIGN
 	} token_t;
 
 	class Token {

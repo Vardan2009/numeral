@@ -2,10 +2,12 @@
 #include <string>
 #include <iostream>
 #include <memory>
+#include "../lexer/token.h"
 
 namespace parser {
 
     typedef enum {
+        NONE,
         BINOP,
         UNARYOP,
         LITERAL,
@@ -14,7 +16,7 @@ namespace parser {
 
     class Node {
     public:
-        node_t type;
+        node_t type = NONE;
         virtual void print(int indent) const = 0;
         virtual ~Node() = default;
     };
@@ -22,9 +24,9 @@ namespace parser {
     class BinOpNode : public Node {
     public:
         std::shared_ptr<parser::Node> left, right;
-        char operation;
+        lexer::token_t operation;
 
-        BinOpNode(std::shared_ptr<parser::Node> l, char op, std::shared_ptr<parser::Node> r)
+        BinOpNode(std::shared_ptr<parser::Node> l, lexer::token_t op, std::shared_ptr<parser::Node> r)
             : left(l), operation(op), right(r) {
             type = BINOP;
         }
@@ -40,9 +42,9 @@ namespace parser {
     class UnaryOpNode : public Node {
     public:
         std::shared_ptr<parser::Node> right;
-        char operation;
+        lexer::token_t operation;
 
-        UnaryOpNode(char op, std::shared_ptr<parser::Node> r)
+        UnaryOpNode(lexer::token_t op, std::shared_ptr<parser::Node> r)
             : operation(op), right(r) {
             type = UNARYOP;
         }

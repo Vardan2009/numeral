@@ -1,5 +1,9 @@
 ﻿#include "numeral.h"
 
+// create an instance of the interpreter
+// we need one instance to preserve the variables between each command
+execution::Interpreter interpreter;
+
 void processInput(const std::string& input) {
     // Create a lexer and tokenize the input
     std::vector<std::shared_ptr<lexer::Token>> tokens;
@@ -12,6 +16,12 @@ void processInput(const std::string& input) {
         return;
     }
 
+    /*
+    for (std::shared_ptr<lexer::Token> t : tokens) {
+        std::cout << "TOKEN(" << t->type << ", " << t->value << ", " << t->value_str << ")" << std::endl;
+    }
+    */
+
     // If there are no tokens, do nothing
     if (tokens.empty()) return;
 
@@ -20,15 +30,15 @@ void processInput(const std::string& input) {
     try {
         parser::Parser parser(tokens);
         root = parser.expr();
+        root->print(0);
     }
     catch (std::runtime_error e) {
         std::cerr << "[parser] " << e.what() << std::endl;
         return;
     }
 
-    // Create an interpreter and execute the syntax tree
+    // execute the syntax tree using the instance of the interpreter created at the beginning
     try {
-        execution::Interpreter interpreter;
         std::cout << interpreter.node(root) << std::endl;
     } catch (std::runtime_error e) {
         std::cerr << "[interpreter] " << e.what() << std::endl;

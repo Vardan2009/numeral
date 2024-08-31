@@ -33,18 +33,27 @@ double execution::Interpreter::binop_node(std::shared_ptr<parser::Node> baseptr)
 	std::shared_ptr<parser::BinOpNode> nodeptr = std::static_pointer_cast<parser::BinOpNode>(baseptr);
 	switch (nodeptr->operation)
 	{
-	case '+':
+	case lexer::PLUS :
 		return node(nodeptr->left) + node(nodeptr->right);
-	case '-':
+	case lexer::MINUS:
 		return node(nodeptr->left) - node(nodeptr->right);
-	case '*':
+	case lexer::MUL:
 		return node(nodeptr->left) * node(nodeptr->right);
-	case '/':
+	case lexer::DIV:
 		return node(nodeptr->left) / node(nodeptr->right);
-	case '^':
+	case lexer::CARET:
 		return std::pow(node(nodeptr->left), node(nodeptr->right));
+	case lexer::ASSIGN: {
+		if (nodeptr->left->type != parser::VARIABLE)
+			throw std::runtime_error("Lvalue of assignment should be identifier");
+
+		std::string varname = (std::static_pointer_cast<parser::VariableNode>(nodeptr->left))->name;
+		double result = node(nodeptr->right);
+		variables[varname] = result;
+		return result;
+	}
 	default:
-		throw std::runtime_error("Invalid binary operator " + nodeptr->operation);
+		throw std::runtime_error("Invalid binary operator " + std::to_string(nodeptr->operation));
 		break;
 	}
 }
@@ -54,6 +63,7 @@ double execution::Interpreter::literal_node(std::shared_ptr<parser::Node> basept
 	return nodeptr->value;
 }
 
-double execution::Interpreter::variable_node(std::shared_ptr<parser::Node> node) {
-	throw std::runtime_error("variable undefined!");
+double execution::Interpreter::variable_node(std::shared_ptr<parser::Node> nodeptr) {
+	std::string varname = (std::static_pointer_cast<parser::VariableNode>(nodeptr))->name;
+	return variables[varname];
 }
