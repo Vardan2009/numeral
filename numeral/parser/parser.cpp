@@ -18,13 +18,13 @@ std::shared_ptr<parser::Node> parser::Parser::term() {
     
     // Handle multiplication, division, exponentiation
     while (ptr < tokens.size() && (peek()->type == lexer::MUL || peek()->type == lexer::DIV || peek()->type == lexer::CARET || peek()->type == lexer::ASSIGN || peek()->type == lexer::LPAREN)) {
-        if (peek()->type == lexer::LPAREN) {
-            std::shared_ptr<parser::Node> right = factor();
-            node = std::make_shared<BinOpNode>(node, lexer::MUL, right);
+        if (peek()->type == lexer::LPAREN) { // if the next token is a left parenthasis (for multipliations like 5(2 + 3) or (1 + 1)(2 + 2))
+            std::shared_ptr<parser::Node> right = factor(); // get the right side (which is a factor)
+            node = std::make_shared<BinOpNode>(node, lexer::MUL, right); // create a multiplication node
         } else {
-            std::shared_ptr<lexer::Token> op = advance();
+            std::shared_ptr<lexer::Token> op = advance(); // get the operator token
             std::shared_ptr<parser::Node> right = op->type == lexer::ASSIGN ? expr() : factor();  // Parse the right side as a factor
-            node = std::make_shared<BinOpNode>(node, op->type, right);
+            node = std::make_shared<BinOpNode>(node, op->type, right); // create a node with its operation and sides
         }
     }
 
