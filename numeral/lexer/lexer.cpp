@@ -35,8 +35,7 @@ std::vector<std::shared_ptr<lexer::Token>> lexer::Lexer::tokenize() {
 			// ignore whitespace
 		} else if (*ptr == '\0') break;
 		else {
-			std::cerr << "Invalid character -> `" << (int)(*ptr) << "` at" << ptr - src.c_str() << std::endl;
-			exit(1);
+			throw std::runtime_error("Invalid character -> `" + std::to_string(*ptr) + "` at position " + std::to_string(ptr - src.c_str()));
 		}
 	}
 	return result;

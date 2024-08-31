@@ -1,6 +1,4 @@
 #include "parser.h"
-#include <memory>
-#include <iostream>
 
 std::shared_ptr<parser::Node> parser::Parser::expr() {
     std::shared_ptr<parser::Node> node = term();
@@ -46,13 +44,11 @@ std::shared_ptr<parser::Node> parser::Parser::factor() {
     }
 
     // If no valid token was found, output error and terminate
-    std::cerr << "Invalid factor" << std::endl;
     throw std::runtime_error("Invalid factor");
 }
 
 std::shared_ptr<lexer::Token> parser::Parser::peek() {
     if (ptr >= tokens.size()) {
-        std::cerr << "Unexpected end of input" << std::endl;
         throw std::runtime_error("Unexpected end of input");
     }
     return tokens[ptr];
@@ -60,7 +56,6 @@ std::shared_ptr<lexer::Token> parser::Parser::peek() {
 
 std::shared_ptr<lexer::Token> parser::Parser::advance() {
     if (ptr >= tokens.size()) {
-        std::cerr << "Unexpected end of input" << std::endl;
         throw std::runtime_error("Unexpected end of input");
     }
     return tokens[ptr++];
@@ -72,8 +67,7 @@ void parser::Parser::consume(lexer::token_t t, const std::string v) {
         advance();  // Consume the token if it matches
     }
     else {
-        std::cerr << "Unexpected token, expected " << v << std::endl;
-        throw std::runtime_error("Unexpected token");
+        throw std::runtime_error("Unexpected token, expected " + v);
     }
 }
 
@@ -83,8 +77,7 @@ void parser::Parser::consume(lexer::token_t t, double v) {
         advance();  // Consume the token if it matches
     }
     else {
-        std::cerr << "Unexpected token, expected " << v << std::endl;
-        throw std::runtime_error("Unexpected token");
+        throw std::runtime_error("Unexpected token, expected " + std::to_string(v));
     }
 }
 
@@ -94,7 +87,6 @@ void parser::Parser::consume(lexer::token_t t) {
         advance();  // Consume the token if it matches
     }
     else {
-        std::cerr << "Unexpected token, expected type " << t << std::endl;
-        throw std::runtime_error("Unexpected token");
+        throw std::runtime_error("Unexpected token, expected type " + std::to_string(t));
     }
 }
