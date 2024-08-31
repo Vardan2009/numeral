@@ -19,9 +19,9 @@ double execution::Interpreter::unaryop_node(std::shared_ptr<parser::Node> basept
 	std::shared_ptr<parser::UnaryOpNode> nodeptr = std::static_pointer_cast<parser::UnaryOpNode>(baseptr);
 	switch (nodeptr->operation)
 	{
-	case '+':
+	case lexer::PLUS:
 		return +node(nodeptr->right);
-	case '-':
+	case lexer::MINUS:
 		return -node(nodeptr->right);
 	default:
 		throw std::runtime_error("Invalid unary operator " + nodeptr->operation);
