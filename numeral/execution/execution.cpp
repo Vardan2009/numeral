@@ -4,12 +4,28 @@ double execution::Interpreter::node(std::shared_ptr<parser::Node> node) {
 	switch (node->type) {
 	case parser::BINOP:
 		return binop_node(node);
+	case parser::UNARYOP:
+		return unaryop_node(node);
 	case parser::LITERAL:
 		return literal_node(node);
 	case parser::VARIABLE:
 		return variable_node(node);
 	default:
 		throw std::runtime_error("Unknown node type!");
+	}
+}
+
+double execution::Interpreter::unaryop_node(std::shared_ptr<parser::Node> baseptr) {
+	std::shared_ptr<parser::UnaryOpNode> nodeptr = std::static_pointer_cast<parser::UnaryOpNode>(baseptr);
+	switch (nodeptr->operation)
+	{
+	case '+':
+		return +node(nodeptr->right);
+	case '-':
+		return -node(nodeptr->right);
+	default:
+		throw std::runtime_error("Invalid unary operator " + nodeptr->operation);
+		break;
 	}
 }
 
@@ -28,6 +44,7 @@ double execution::Interpreter::binop_node(std::shared_ptr<parser::Node> baseptr)
 	case '^':
 		return std::pow(node(nodeptr->left), node(nodeptr->right));
 	default:
+		throw std::runtime_error("Invalid binary operator " + nodeptr->operation);
 		break;
 	}
 }

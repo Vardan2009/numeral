@@ -36,6 +36,10 @@ std::shared_ptr<parser::Node> parser::Parser::factor() {
     case lexer::IDENTIFIER:
         advance();  // Move to next token
         return std::make_shared<VariableNode>(t->value_str);  // Return a variable node
+    case lexer::PLUS:
+    case lexer::MINUS:
+        advance(); // Move to next token
+        return std::make_shared<UnaryOpNode>(t->value_str[0], factor()); // create a unary operator with the operator and the factor after it
     case lexer::LPAREN:
         consume(lexer::LPAREN);  // Consume the '(' token
         std::shared_ptr<parser::Node> node = expr();  // Parse inner expression
@@ -47,6 +51,7 @@ std::shared_ptr<parser::Node> parser::Parser::factor() {
     throw std::runtime_error("Invalid factor");
 }
 
+// return current token
 std::shared_ptr<lexer::Token> parser::Parser::peek() {
     if (ptr >= tokens.size()) {
         throw std::runtime_error("Unexpected end of input");
@@ -54,12 +59,16 @@ std::shared_ptr<lexer::Token> parser::Parser::peek() {
     return tokens[ptr];
 }
 
+// return current token and advance
 std::shared_ptr<lexer::Token> parser::Parser::advance() {
     if (ptr >= tokens.size()) {
         throw std::runtime_error("Unexpected end of input");
     }
     return tokens[ptr++];
 }
+
+// these 3 functions are for expected tokens
+// basically check the token, and if it's the expected one, advance, else throw an error
 
 void parser::Parser::consume(lexer::token_t t, const std::string v) {
     std::shared_ptr<lexer::Token> token = peek();  // Peek at current token without moving it

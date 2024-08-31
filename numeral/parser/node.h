@@ -7,6 +7,7 @@ namespace parser {
 
     typedef enum {
         BINOP,
+        UNARYOP,
         LITERAL,
         VARIABLE
     } node_t;
@@ -32,6 +33,23 @@ namespace parser {
             for (int i = 0; i < indent; i++) std::cout << "--";
             std::cout << ' ' << operation << std::endl;
             left->print(indent + 1);
+            right->print(indent + 1);
+        }
+    };
+
+    class UnaryOpNode : public Node {
+    public:
+        std::shared_ptr<parser::Node> right;
+        char operation;
+
+        UnaryOpNode(char op, std::shared_ptr<parser::Node> r)
+            : operation(op), right(r) {
+            type = UNARYOP;
+        }
+
+        void print(int indent) const override {
+            for (int i = 0; i < indent; i++) std::cout << "--";
+            std::cout << ' ' << operation << std::endl;
             right->print(indent + 1);
         }
     };
